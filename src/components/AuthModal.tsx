@@ -65,11 +65,17 @@ function AuthModal({open,onClose}:propType){
                             <div className='mt-5 space-y-4'>
                                 <div className='flex items-center gap-3 border border-black/20 rounded-xl px-4 py-3'>
                                     <Mail size={18} className='text-gray-500'/>
-                                    <input type="text" placeholder='email' className='w-full bg-transparent outline-none text-sm'/>
+                                    <input type="text" placeholder='email' className='w-full bg-transparent outline-none text-sm'
+                                    onChange={(e)=>setEmail(e.target.value)} 
+                                    value={email}
+                                    />
                                 </div>
                                 <div className='flex items-center gap-3 border border-black/20 rounded-xl px-4 py-3'>
                                     <Lock size={18} className='text-gray-500'/>
-                                    <input type="password" placeholder='password' className='w-full bg-transparent outline-none text-sm'/>
+                                    <input type="password" placeholder='password' className='w-full bg-transparent outline-none text-sm'
+                                    onChange={(e)=>setEmail(e.target.value)} 
+                                    value={email}
+                                    />
                                 </div>
                                 <button className='w-full h-11 rounded-xl bg-black text-white font-semibold hover:bg-gray-900 cursor-pointer'>Login</button>
                             </div>
