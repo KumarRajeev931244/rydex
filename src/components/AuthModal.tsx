@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import {AnimatePresence, easeOut, motion} from 'motion/react'
 import { Lock, Mail, User, X } from 'lucide-react'
 import Image from 'next/image'
+import axios from 'axios'
 
 type propType={
     open:boolean,
@@ -14,6 +15,16 @@ function AuthModal({open,onClose}:propType){
     const [name,setName] = useState("");
     const [email,setEmail] = useState("");
     const [password, setPassword] = useState("")
+    const handleSignup = async () => {
+        try {
+            const {data} = await axios.post("/api/auth/register",{
+                name,email,password
+            })
+            console.log(data)
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return(
         <AnimatePresence>
         {open && (
@@ -73,13 +84,13 @@ function AuthModal({open,onClose}:propType){
                                 <div className='flex items-center gap-3 border border-black/20 rounded-xl px-4 py-3'>
                                     <Lock size={18} className='text-gray-500'/>
                                     <input type="password" placeholder='password' className='w-full bg-transparent outline-none text-sm'
-                                    onChange={(e)=>setEmail(e.target.value)} 
-                                    value={email}
+                                    onChange={(e)=>setPassword(e.target.value)} 
+                                    value={password}
                                     />
                                 </div>
                                 <button className='w-full h-11 rounded-xl bg-black text-white font-semibold hover:bg-gray-900 cursor-pointer'>Login</button>
                             </div>
-                            <p className='mt-6 text-center text-sm text-gray-500'>Don't have account? <div onClick={()=> setStep("signup")} className='text-black font-medium hover:underline cursor-pointer'>Sign Up</div></p>
+                            <div className='mt-6 text-center text-sm text-gray-500'>Don't have account? <div onClick={()=> setStep("signup")} className='text-black font-medium hover:underline cursor-pointer'>Sign Up</div></div>
 
                         </motion.div>
                     )}
@@ -94,19 +105,28 @@ function AuthModal({open,onClose}:propType){
                             <div className='mt-5 space-y-4'>
                                 <div className='flex items-center gap-3 border border-black/20 rounded-xl px-4 py-3'>
                                     <User size={18} className='text-gray-500'/>
-                                    <input type="text" placeholder='Full Name' className='w-full bg-transparent outline-none text-sm'/>
+                                    <input type="text" placeholder='Full Name' className='w-full bg-transparent outline-none text-sm'
+                                    onChange={(e)=>setName(e.target.value)} 
+                                    value={name}
+                                    />
                                 </div>
                                 <div className='flex items-center gap-3 border border-black/20 rounded-xl px-4 py-3'>
                                     <Mail size={18} className='text-gray-500'/>
-                                    <input type="text" placeholder='email' className='w-full bg-transparent outline-none text-sm'/>
+                                    <input type="text" placeholder='email' className='w-full bg-transparent outline-none text-sm'
+                                    onChange={(e)=>setEmail(e.target.value)} 
+                                    value={email}
+                                    />
                                 </div>
                                 <div className='flex items-center gap-3 border border-black/20 rounded-xl px-4 py-3'>
                                     <Lock size={18} className='text-gray-500'/>
-                                    <input type="password" placeholder='password' className='w-full bg-transparent outline-none text-sm'/>
+                                    <input type="password" placeholder='password' className='w-full bg-transparent outline-none text-sm'
+                                    onChange={(e)=>setPassword(e.target.value)} 
+                                    value={password}
+                                    />
                                 </div>
-                                <button className='w-full h-11 rounded-xl bg-black text-white font-semibold hover:bg-gray-900 cursor-pointer'>Sign up</button>
+                                <button className='w-full h-11 rounded-xl bg-black text-white font-semibold hover:bg-gray-900 cursor-pointer'onClick={handleSignup}>Sign up</button>
                             </div>
-                            <p className='mt-6 text-center text-sm text-gray-500'>Already have account? <div onClick={()=> setStep("login")} className='text-black font-medium hover:underline cursor-pointer'>Login</div></p>
+                            <div className='mt-6 text-center text-sm text-gray-500'>Already have account? <div onClick={()=> setStep("login")} className='text-black font-medium hover:underline cursor-pointer'>Login</div></div>
 
                         </motion.div>
                     )}
