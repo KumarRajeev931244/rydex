@@ -13,7 +13,7 @@ type propType={
 type stepType = "login" | "signup" | "otp"
 
 function AuthModal({open,onClose}:propType){
-    const [step, setStep] = useState<stepType>("otp")
+    const [step, setStep] = useState<stepType>("login")
     const [name,setName] = useState("");
     const [email,setEmail] = useState("");
     const [password, setPassword] = useState("")
@@ -29,7 +29,29 @@ function AuthModal({open,onClose}:propType){
             const {data} = await axios.post("/api/auth/register",{
                 name,email,password
             })
+            setErr("")
             console.log(data)
+            setStep("otp")
+            setLoading(false)
+        } catch (error:any) {
+            setLoading(false)
+            console.log(error.response.data.message);
+            setErr(error.response.data.message ?? "something went wrong")
+        }
+    }
+
+    // handle verify otp
+     const handleVerifyEmail = async () => {
+        setLoading(true);
+        try {
+            const {data} = await axios.post("/api/auth/verify-email",{
+                email,
+                otp : otp.join("")
+            })
+            console.log(data)
+            setOtp(["","","","","",""])
+            setErr("")
+            setStep("login")
             setLoading(false)
         } catch (error:any) {
             setLoading(false)
@@ -169,7 +191,7 @@ function AuthModal({open,onClose}:propType){
                                 </div>
                                 {err && <p className='text-red-500'>*{err}</p>}
                                 <button className='w-full h-11 rounded-xl bg-black text-white font-semibold hover:bg-gray-900 cursor-pointer flex justify-center items-center'onClick={handleSignup}
-                                disabled={loading} >{!loading?"Sign up":<CircleDashed size={18} color='white' className='animate-spin'/>}</button>
+                                disabled={loading} >{!loading?"Send Otp":<CircleDashed size={18} color='white' className='animate-spin'/>}</button>
                             </div>
                             <div className='mt-6 text-center text-sm text-gray-500'>Already have account? <div onClick={()=> setStep("login")} className='text-black font-medium hover:underline cursor-pointer'>Login</div></div>
 
@@ -197,6 +219,8 @@ function AuthModal({open,onClose}:propType){
                                     ></input>
                                 ))}
                             </div>
+                            {err && <p className='text-red-500'>*{err}</p>}
+                            <button className="mt-6 w-full h-11 rounded-xl bg-black text-white font-semibold hover:bg-gray-900 transition cursor-pointer flex items-center justify-center" onClick={handleVerifyEmail}> {!loading?"verify otp and create account":<CircleDashed size={18} color='white' className='animate-spin'/>}</button>
 
                         </motion.div>
                     )}
