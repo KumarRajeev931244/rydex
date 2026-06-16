@@ -1,28 +1,71 @@
 "use client"
 import React, { useState } from 'react'
 import {AnimatePresence, easeOut, motion} from 'motion/react'
-import { Lock, Mail, User, X } from 'lucide-react'
+import { CircleDashed, Lock, Mail, User, X } from 'lucide-react'
 import Image from 'next/image'
 import axios from 'axios'
+import {  signIn, useSession } from 'next-auth/react'
 
 type propType={
     open:boolean,
     onClose:() => void
 }
 type stepType = "login" | "signup" | "otp"
+
 function AuthModal({open,onClose}:propType){
-    const [step, setStep] = useState<stepType>("login")
+    const [step, setStep] = useState<stepType>("otp")
     const [name,setName] = useState("");
     const [email,setEmail] = useState("");
     const [password, setPassword] = useState("")
+    const [loading, setLoading] = useState(false)
+    const [err,setErr] = useState("")
+    const [otp,setOtp] = useState(["","","","","",""])
+
+    const {data} = useSession()
+    // console.log(data);
     const handleSignup = async () => {
+        setLoading(true);
         try {
             const {data} = await axios.post("/api/auth/register",{
                 name,email,password
             })
             console.log(data)
-        } catch (error) {
-            console.log(error);
+            setLoading(false)
+        } catch (error:any) {
+            setLoading(false)
+            console.log(error.response.data.message);
+            setErr(error.response.data.message ?? "something went wrong")
+        }
+    }
+
+    // login with credentials
+   const handleLogin = async() => {
+        setLoading(true)
+        const res = await signIn("credentials",{
+            email,
+            password,
+            redirect:false
+        })
+        setLoading(false)
+        console.log(res);
+    }
+
+    // login with google
+    const handleGooggleLogin = async () => {
+        const response = await signIn("google")
+        console.log(response);
+    }
+
+    const handleChangeOtp = (index:number,value:string) => {
+        if(!/^[0-9]?$/.test(value)) return
+        const updated= [...otp];
+        updated[index] = value
+        setOtp(updated)
+        if(value && index<otp.length-1){
+            document.getElementById(`otp-${index+1}`)?.focus()
+        }
+        if(!value && index>0){
+            document.getElementById(`otp-${index-1}`)?.focus()
         }
     }
     return(
@@ -52,8 +95,8 @@ function AuthModal({open,onClose}:propType){
                     </div>
                     {/* button */}
                     <button
-                    className='w-full h-11 rounded-xl border border-black/20 flex items-center justify-center gap-3 text-sm font-semibold hover:bg-black hover:text-white transition cursor-pointer'>
-                        <Image src={'/google.png'} alt='google' width={20} height={20}/>
+                    className='w-full h-11 rounded-xl border border-black/20 flex items-center justify-center gap-3 text-sm font-semibold hover:bg-black hover:text-white transition cursor-pointer' onClick={handleGooggleLogin}>
+                        <Image src={'/google.png'} alt='google' width={20} height={20} />
                         Continue with google
 
                     </button>
@@ -88,7 +131,7 @@ function AuthModal({open,onClose}:propType){
                                     value={password}
                                     />
                                 </div>
-                                <button className='w-full h-11 rounded-xl bg-black text-white font-semibold hover:bg-gray-900 cursor-pointer'>Login</button>
+                                <button className='w-full h-11 rounded-xl bg-black text-white font-semibold hover:bg-gray-900 cursor-pointer flex items-center justify-center' onClick={handleLogin} >{!loading?"Login":<CircleDashed size={18} color='white' className='animate-spin'/>}</button>
                             </div>
                             <div className='mt-6 text-center text-sm text-gray-500'>Don't have account? <div onClick={()=> setStep("signup")} className='text-black font-medium hover:underline cursor-pointer'>Sign Up</div></div>
 
@@ -124,12 +167,40 @@ function AuthModal({open,onClose}:propType){
                                     value={password}
                                     />
                                 </div>
-                                <button className='w-full h-11 rounded-xl bg-black text-white font-semibold hover:bg-gray-900 cursor-pointer'onClick={handleSignup}>Sign up</button>
+                                {err && <p className='text-red-500'>*{err}</p>}
+                                <button className='w-full h-11 rounded-xl bg-black text-white font-semibold hover:bg-gray-900 cursor-pointer flex justify-center items-center'onClick={handleSignup}
+                                disabled={loading} >{!loading?"Sign up":<CircleDashed size={18} color='white' className='animate-spin'/>}</button>
                             </div>
                             <div className='mt-6 text-center text-sm text-gray-500'>Already have account? <div onClick={()=> setStep("login")} className='text-black font-medium hover:underline cursor-pointer'>Login</div></div>
 
                         </motion.div>
                     )}
+
+                    {/* otp */}
+                    {step == "otp" && (
+                        <motion.div
+                        key="otp"
+                        initial={{opacity:0, x:20}}
+                        animate={{opacity:1,x:0}}
+                        exit={{opacity:0,x:-20}}
+                        >
+                            <h2 className='text-xl font-semibold'> verify Email</h2>
+                            <div className="mt-6 flex justify-between gap-2">
+                                {otp.map((digit,i)=>(
+                                    <input
+                                    key={i}
+                                    id={`otp-${i}`}
+                                    value={digit}
+                                    maxLength={1}
+                                    className='w-10 h-12 sm:w-12 text-center text-lg font-semibold rounded-xl bg-white border border-black/20 none'
+                                    onChange={(e) => handleChangeOtp(i,e.target.value)}
+                                    ></input>
+                                ))}
+                            </div>
+
+                        </motion.div>
+                    )}
+
                    </div>
 
 

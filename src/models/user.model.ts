@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 export interface IUser{
     name:string,
     email:string,
-    password:string,
+    password?:string,
     role:"user" | "partner" | "admin"
     createdAt:Date,
     updatedAt:Date
