@@ -28,13 +28,13 @@ export async function POST(req: NextRequest) {
       );
     }
     const updatePayload: any = {
-      status: "pending",
+      status: "pending"
     };
     if (aadhar) {
       const url = await uploadOnCloudinary(aadhar);
       if (!url) {
         return Response.json(
-          { message: "aadhar upload fail" },
+          { message: "aadhar upload failed" },
           { status: 500 },
         );
       }
@@ -68,6 +68,14 @@ export async function POST(req: NextRequest) {
     await user.save();
     return Response.json(partnerDoc , { status: 201 });
   } catch (error) {
+    console.error("=== PARTNER DOCUMENT UPLOAD ERROR ===");
+    console.error("Error object:", error);
+    if (error instanceof Error) {
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+    }
+    console.error("Full error:", JSON.stringify(error, null, 2));
+    console.error("=====================================");
     return Response.json(
       { message: `partner docs error ${error}` },
       { status: 500 },

@@ -26,7 +26,8 @@ export default function page() {
       formdata.append("aadhar",docs.aadhar);
       formdata.append("license",docs.license)
       formdata.append("rc",docs.rc)
-      const {data} = await axios.post("/api/partner/onboarding/documents",formdata);
+      const {data} = await axios.post("/api/partner/onboarding/document",formdata)
+      
       console.log(data);
     } catch (error:any) {
       setError(error?.response?.data?.message || "something went wrong")
