@@ -1,8 +1,10 @@
 "use client";
 import React, { useState } from "react";
 import { motion } from "motion/react";
-import { ArrowLeft, Bike, Car, Icon, Package, Truck } from "lucide-react";
+import { ArrowLeft, Bike, Car, CircleDashed, Icon, Package, Truck } from "lucide-react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+
 
 const VEHICLES = [
     {id:"bike", label:"Bike", icon:Bike, desc:"2 wheeler"},
@@ -15,8 +17,25 @@ const VEHICLES = [
 export default function Page() {
     const [vehicleType,setVehicleType] = useState("")
     const [vehicleNumber,setVehicleNumber] = useState("")
-    const [vehicleModal,setVehicleModal] = useState("")
+    const [vehicleModel,setVehicleModel] = useState("")
+    const [err,setErr] = useState("")
+    const [loading, setLoading] = useState(false)
+
   const router = useRouter();
+  const handleVehicle = async() => {
+    setErr("")
+    try {
+      setLoading(true)
+      const {data} = await axios.post("/api/partner/onboarding/vehicle",{type:vehicleType, number:vehicleNumber, vehicleModel})
+      console.log(data);
+      setLoading(false)
+    } catch (error:any) {
+      setErr(error?.response?.data?.message || "something went wrong")
+      console.log(error);
+      setLoading(false)
+      
+    }
+  }
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4">
       <motion.div
@@ -75,26 +94,29 @@ export default function Page() {
                 type="text" 
                 id="vn" 
                 placeholder="MH12AB1234" 
-                className="mt-2 w-full border-b border-gray-300 pb-2 text-sm focus:outline-none focus:border-black transition"
-                onChange={(e) => setVehicleNumber(e.target.value)}
+                className="mt-2 w-full border-b border-gray-300 pb-2 text-sm uppercase focus:outline-none focus:border-black transition"
+                onChange={(e) => setVehicleNumber(e.target.value.toUpperCase())}
                 />
             </div>
             <div>
-                <label htmlFor="vm" className="text-xs font-semibold text-gray-500">Vehicle Modal</label>
+                <label htmlFor="vm" className="text-xs font-semibold text-gray-500">Vehicle Model</label>
                 <input 
                 type="text" 
                 id="vm" 
                 placeholder="Tata Ace" 
-                className="mt-2 w-full border-b border-gray-300 pb-2 text:sm focus:outline-none focus:border-black transition"
-                onChange={(e) => setVehicleModal(e.target.value)}
+                className="mt-2 w-full border-b border-gray-300 pb-2 text-sm focus:outline-none focus:border-black transition"
+                onChange={(e) => setVehicleModel(e.target.value)}
                 />
             </div>
+            {err && <p className="text-red-500 ">*{err}</p>}
+            
             <motion.button
+            disabled={loading}
             whileHover={{scale:1.02}}
             whileTap={{scale:0.97}}
-            className="mt-8 w-full h-14 rounded-2xl bg-black text-white font-semibold flex items-center justify-center gap-2 disabled:opacity-40 transition"
-            >
-                Continue
+            className="mt-8 w-full h-14 rounded-2xl bg-black text-white font-semibold flex items-center justify-center gap-2 disabled:opacity-40 transition cursor-pointer" onClick={handleVehicle}
+            > {loading?<CircleDashed className="text-white animate-spin"/>: "Continue"}
+              
 
             </motion.button>
         </div>

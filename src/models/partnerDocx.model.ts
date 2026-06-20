@@ -4,7 +4,7 @@ interface IPartnerDocs{
     owner:mongoose.Types.ObjectId
     aadharUrl:string,
     rcUrl:string,
-    licenceUrl:string,
+    licenseUrl:string,
     status:"approved" | "pending" | "rejected",
     rejectionReason?:string,
     createdAt:Date,
@@ -20,7 +20,7 @@ const partnerDocsSchema = new mongoose.Schema<IPartnerDocs>({
     
     aadharUrl:String,
     rcUrl:String,
-    licenceUrl:String,
+    licenseUrl:String,
     status:{
         type:String,
         enum:["approved" , "pending" , "rejected"],
@@ -29,5 +29,5 @@ const partnerDocsSchema = new mongoose.Schema<IPartnerDocs>({
     rejectionReason:String,
 },{timestamps:true})
 
-const  partnerDocs = mongoose.models.partnerDocs || mongoose.model("partnerDocs", partnerDocsSchema)
-export default partnerDocs
+const  PartnerDocs = mongoose.models.PartnerDocs || mongoose.model("PartnerDocs", partnerDocsSchema)
+export default PartnerDocs
