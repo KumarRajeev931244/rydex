@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { motion } from "motion/react";
-import { ArrowLeft, FileCheck, UploadCloud } from "lucide-react";
+import { ArrowLeft, CircleDashed, FileCheck, UploadCloud } from "lucide-react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 
@@ -18,10 +18,16 @@ export default function page() {
   const [loading, setLoading] = useState(false)
 
   const handleDocs = async() => {
+    setLoading(true)
+    setError("")
     try {
+
       const formdata = new FormData();
       if(!docs.aadhar || !docs.license || !docs.rc){
+        setError("all documents are required")
+        setLoading(false)
         return null
+        
       }
       formdata.append("aadhar",docs.aadhar);
       formdata.append("license",docs.license)
@@ -29,6 +35,7 @@ export default function page() {
       const {data} = await axios.post("/api/partner/onboarding/document",formdata)
       
       console.log(data);
+      setLoading(false)
     } catch (error:any) {
       setError(error?.response?.data?.message || "something went wrong")
       setLoading(false)
@@ -123,7 +130,8 @@ export default function page() {
         whileTap={{scale:0.97}}
         onClick={handleDocs}
         className="mt-8 w-full h-14 rounded-2xl bg-black text-white font-semibold flex items-center justify-center gap-2 disabled:opacity-40 transition cursor-pointer"
-        >Continue
+        >
+        {loading?<CircleDashed className="text-white animate-spin"/>:"Continue"}
 
         </motion.button>
       </motion.div>
