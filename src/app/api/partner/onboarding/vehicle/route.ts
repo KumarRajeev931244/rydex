@@ -31,13 +31,7 @@ export async function POST(req: Request) {
       );
     }
     const vehicleNumber = number.toUpperCase();
-    const duplicate = await Vehicle.findOne({ vehicleNumber });
-    if (duplicate) {
-      return Response.json(
-        { message: "Vehicle alredy registered" },
-        { status: 400 },
-      );
-    }
+    
 
     let vehicle = await Vehicle.findOne({ owner: user._id });
     if (vehicle) {
@@ -48,6 +42,13 @@ export async function POST(req: Request) {
       await vehicle.save();
       // check here
     } else {
+      const duplicate = await Vehicle.findOne({ vehicleNumber });
+    if (duplicate) {
+      return Response.json(
+        { message: "Vehicle alredy registered" },
+        { status: 400 },
+      );
+    }
       vehicle = await Vehicle.create({
         owner:user._id,
         type,

@@ -3,8 +3,10 @@ import axios from "axios";
 import { ArrowLeft, BadgeCheck, CheckCircle, CircleDashed, CreditCard, Landmark, Phone } from "lucide-react";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
+
+const IFSC_REGEX=/^[A-Z]{4}0[A-Z0-9]{6}$/
 export default function Page() {
   const router = useRouter();
   const [accountHolder, setAccountHolder] = useState("")
@@ -14,13 +16,19 @@ export default function Page() {
   const [mobileNumber, setMobileNumber] = useState("")
   const [loading, setLoading] = useState(false)
   const [err,setErr] = useState("")
+  const sanitizedIfsc = ifsc.trim().toUpperCase()
+  const isNameValid = accountHolder.trim().length > 3;
+  const isAccountValid = accountNumber.trim().length >=9;
+  const isIfscValid = IFSC_REGEX.test(sanitizedIfsc)
+  const isMobileValid = mobileNumber.trim().length == 10
+  const canSubmit = isNameValid && isAccountValid && isIfscValid && isMobileValid
 
   const handleBank = async() => {
     setLoading(true)
     setErr("")
     try {
       const {data} = await axios.post("/api/partner/onboarding/bank",{
-        accountHolder,accountNumber,ifsc,upi,mobileNumber
+        accountHolder,accountNumber,ifsc:sanitizedIfsc,upi,mobileNumber
       })
       console.log("bank data:",data);
       setLoading(false);
@@ -31,6 +39,27 @@ export default function Page() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+     const handleGetBank = async() => {
+    try {
+      const {data} = await axios.get("/api/partner/onboarding/bank")
+      console.log("bank get  data:",data);
+      setAccountHolder(data.partnerBank.accountHolder)
+      setAccountNumber(data.partnerBank.accountNumber)
+      setIfsc(data.partnerBank.ifsc)
+      setMobileNumber(data.mobileNumber)
+      setUpi(data.partnerBank.upi)
+      
+    } catch (error:any ) {
+      console.log("bank error:",error);
+    }
+  }
+  handleGetBank()
+
+  },[])
+  
+
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4">
       <motion.div
@@ -67,9 +96,10 @@ export default function Page() {
                 placeholder="As per bank records"
                 value={accountHolder}
                 onChange={(e) => setAccountHolder(e.target.value)}
-                className="flex-1 border-b pb-2 text-sm focus:outline-none border-gray-300 focus:border-black"
+                className={`flex-1 border-b pb-2 text-sm focus:outline-none ${!isNameValid  && accountHolder.length >0 ? "border-red-300 focus:border-red-500"  : "border-gray-300 focus:border-black"}`}
               />
             </div>
+            {!isNameValid  && accountHolder.length >0 && <p className="mt-1 text-xs  -red-500">Minimum 3 character required</p>}
           </div>
           
         </div>
@@ -92,9 +122,10 @@ export default function Page() {
                 value={accountNumber}
                 onChange={(e) => setAccountNumber(e.target.value)}
                 placeholder="Enter account number"
-                className="flex-1 border-b pb-2 text-sm focus:outline-none border-gray-300 focus:border-black"
+                className={`flex-1 border-b pb-2 text-sm focus:outline-none ${!isAccountValid  && accountNumber.length >0 ? "border-red-300 focus:border-red-500"  : "border-gray-300 focus:border-black"}`}
               />
             </div>
+            {!isAccountValid  && accountNumber.length >0 && <p className="mt-1 text-xs  -red-500">Account number must be atleast  9 digits</p>}
           </div>
 
           {/* ifsc */}
@@ -113,12 +144,13 @@ export default function Page() {
               <input
                 type="text"
                 id="ifsc"
-                value={ifsc}
+                value={ifsc.toUpperCase()}
                 onChange={(e) => setIfsc(e.target.value)}
                 placeholder="HDFC0001234"
-                className="flex-1 border-b pb-2 text-sm focus:outline-none border-gray-300 focus:border-black"
+                className={`flex-1 border-b pb-2 text-sm focus:outline-none ${!isIfscValid  && ifsc.length >0 ? "border-red-300 focus:border-red-500"  : "border-gray-300 focus:border-black"}`}
               />
             </div>
+            {!isIfscValid  && ifsc.length >0 && <p className="mt-1 text-xs  -red-500">Invalid ifsc code</p>}
           </div>
           
         </div>
@@ -141,9 +173,10 @@ export default function Page() {
                 value={mobileNumber}
                 onChange={(e) => setMobileNumber(e.target.value)}
                 placeholder="10 digit mobile number"
-                className="flex-1 border-b pb-2 text-sm focus:outline-none border-gray-300 focus:border-black"
+                className={`flex-1 border-b pb-2 text-sm focus:outline-none ${!isMobileValid  && mobileNumber.length >0 ? "border-red-300 focus:border-red-500"  : "border-gray-300 focus:border-black"}`}
               />
             </div>
+            {!isMobileValid  && mobileNumber.length >0 && <p className="mt-1 text-xs  -red-500">Mobile number must be 10 digits</p>}
           </div>
           
         </div>
@@ -178,6 +211,7 @@ export default function Page() {
         </div>
         {err && <p className="text-red-500 text-sm mt-4">*{err}</p>}
         <motion.button
+        disabled={!canSubmit || loading}
         whileHover={{scale:1.02}}
         whileTap={{scale:0.97}}
         onClick={handleBank}

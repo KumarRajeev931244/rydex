@@ -34,7 +34,7 @@ function Nav(){
         <motion.div
         initial={{y:-60, opacity:0}}
         animate={{y:0, opacity:1}}
-        className={`fixed  top-3  w-[94%] md:w-[86%] z-50 rounded-full bg-[#0B0B0B] text-white shadow-[0_15px_50px_rgba(0,0,0,0.7)] py-3`}
+        className={`fixed  ml-16 top-3  w-[94%] md:w-[86%] z-50 rounded-full bg-[#0B0B0B]  text-white shadow-[0_15px_50px_rgba(0,0,0,0.7)] py-3`}
         >
             <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between">
                 <Image src={"/rydex.png"} alt='logo' width={58} height={58} priority/>

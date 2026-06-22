@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { ArrowLeft, Bike, Car, CircleDashed, Icon, Package, Truck } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -36,6 +36,21 @@ export default function Page() {
       
     }
   }
+
+  useEffect(() => {
+    const handleGetVehicle = async() => {
+    try {
+      const {data} = await axios.get("/api/partner/onboarding/vehicle");
+      setVehicleType(data.type)
+      setVehicleNumber(data.number)
+      setVehicleModel(data.vehicleModel)
+      console.log(data);
+    } catch (error:any) {
+      console.log(error);
+    }
+  }
+  handleGetVehicle()
+  },[])
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4">
       <motion.div
@@ -91,6 +106,7 @@ export default function Page() {
             <div>
                 <label htmlFor="vn" className="text-xs font-semibold text-gray-500">Vehicle Number</label>
                 <input 
+                value={vehicleNumber}
                 type="text" 
                 id="vn" 
                 placeholder="MH12AB1234" 
@@ -103,6 +119,7 @@ export default function Page() {
                 <input 
                 type="text" 
                 id="vm" 
+                value={vehicleModel}
                 placeholder="Tata Ace" 
                 className="mt-2 w-full border-b border-gray-300 pb-2 text-sm focus:outline-none focus:border-black transition"
                 onChange={(e) => setVehicleModel(e.target.value)}
