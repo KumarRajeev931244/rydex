@@ -8,7 +8,7 @@ import { NextRequest } from "next/server";
 
 export async function GET(
     req:NextRequest,
-    context:{param:Promise<{id:string}>}
+    context: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await auth()
@@ -18,10 +18,11 @@ export async function GET(
                 {status:400}
             )
         }
-        connectDb()
-        const partnerId = (await context.param).id
+        await connectDb()
+        const partnerId = (await context.params).id
         const partner = await User.findById(partnerId)
-        if(!partner || partner.role !=="admin"){
+        console.log("partner:",partner);
+        if(!partner || partner.role !=="partner"){
             return Response.json(
                 {message:"partner not found"},
                 {status:400}
@@ -31,7 +32,9 @@ export async function GET(
         const documents = await PartnerDocs.findOne({owner:partnerId})
         const bank = await PartnerBank.findOne({owner:partnerId})
         return Response.json(
-                {vehicle:vehicle || null,
+                {
+                    partner,
+                    vehicle:vehicle || null,
                     document:documents || null,
                     bank: bank || null
                 },

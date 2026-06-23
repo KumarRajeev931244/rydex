@@ -34,7 +34,7 @@ const KPI_CONFIG: Record<
 
 export default function Kpi({label, value, icon, variant}:any) {
   const cfg = KPI_CONFIG[variant];
-  console.log("config:",cfg);
+  // console.log("config:",cfg);
   return (
     <motion.div
       whileHover={{ y: -5, boxShadow: "0 20px 48px rgba(0,0,0,0.10" }}

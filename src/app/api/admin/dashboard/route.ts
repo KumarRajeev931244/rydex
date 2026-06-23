@@ -8,7 +8,8 @@ export async function GET(req:NextRequest){
     try {
         await connectDb();
         const session = await auth()
-        if(!session || !session.user?.email || session.user.role !=="admin"){
+        console.log(session);
+        if(!session || !session.user?.email || session.user?.role !=="admin"){
             return Response.json(
                     {message:"unauthorised"}, 
                     { status: 400 });
@@ -50,6 +51,7 @@ export async function GET(req:NextRequest){
     
 
     } catch (error) {
+        console.log("admin dashborar error:",error);
         return NextResponse.json(
             {message: `admin dashboard error ${error}`},
             {status:500}
