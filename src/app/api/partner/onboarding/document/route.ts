@@ -64,7 +64,10 @@ export async function POST(req: NextRequest) {
     );
     if (user.patnerOnBoardingStep < 2) {
       user.patnerOnBoardingStep = 2;
+    }else{
+      user.patnerOnBoardingStep = 3;
     }
+    user.partnerStatus = "pending"
     await user.save();
     return Response.json(partnerDoc , { status: 201 });
   } catch (error) {

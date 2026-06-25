@@ -66,7 +66,7 @@ export default function AdminDashboard(){
                     active={activeTab=="partner"} 
                     count={partnerReview?.length ?? 0} 
                     icon={<User size={15}/>}
-                    onClick={() =>setActiveTab("partner")}>Partner Partner Reviews</TabButton>
+                    onClick={() =>setActiveTab("partner")}>Partner Reviews</TabButton>
 
                     <TabButton 
                     active={activeTab=="kyc"} 

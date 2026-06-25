@@ -33,9 +33,9 @@ export async function POST(req:NextRequest){
                 {upsert:true, new:true}
             )
             user.mobileNumber = mobileNumber;
-            if(user.patnerOnBoardingStep<3){
-                user.patnerOnBoardingStep = 3
-            }
+            user.patnerOnBoardingStep = 3
+            
+            user.partnerStatus="pending"
             await user.save()
             return Response.json(partnerBank, { status: 201 });
 

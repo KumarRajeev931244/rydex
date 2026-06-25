@@ -40,6 +40,15 @@ export async function POST(req: Request) {
       vehicle.vehicelModel = vehicleModel;
       vehicle.status = "pending";
       await vehicle.save();
+      if(user.patnerOnBoardingStep<2){
+        user.patnerOnBoardingStep = 2
+        user.partnerStatus = "pending"
+        await user.save()
+      }else{
+        user.patnerOnBoardingStep = 3
+        user.partnerStatus = "pending"
+        await user.save()
+      }
       // check here
     } else {
       const duplicate = await Vehicle.findOne({ vehicleNumber });
@@ -61,6 +70,7 @@ export async function POST(req: Request) {
       user.patnerOnBoardingStep = 1;
     }
     user.role = "partner";
+    user.partnerStatus = "pending"
     await user.save();
     return Response.json({ vehicle }, { status: 200 });
   } catch (error) {

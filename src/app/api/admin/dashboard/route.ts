@@ -21,7 +21,7 @@ export async function GET(req:NextRequest){
         const pendingPartnerUsers = await User.find({
             role:"partner",
             partnerStatus:"pending",
-            patnerOnBoardingStep:3
+            patnerOnBoardingStep:{$gte:3}
         })
         const partnerIds = pendingPartnerUsers.map((p) => p._id)
         const partnerVehicless = await Vehicle.find({
