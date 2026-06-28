@@ -36,8 +36,20 @@ export default function AdminDashboard(){
             
         }
     }
+
+    const handleGetPendingKYC = async() => {
+        try {
+            const {data} = await axios.get("/api/admin/video-kyc/pending")
+            setPendingKyc(data);
+            console.log(data);
+        } catch (error) {
+            console.log(error);
+            
+        }
+    }
     useEffect(()=>{
-        handleGetData()
+        handleGetData(),
+        handleGetPendingKYC()
     },[])
     return(
         <div className="min-h-screen bg-linear-to-br from-gray-100 to-gray-200">

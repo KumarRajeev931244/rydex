@@ -1,13 +1,14 @@
 "use client";
 import { RootState } from "@/redux/store";
-import { div } from "motion/react-client";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { motion } from "motion/react";
-import { Check, Clock, Lock } from "lucide-react";
+import { Check, Clock, Clock1, Lock, Video } from "lucide-react";
 import { useRouter } from "next/navigation";
 import RejectionCard from "./RejectionCard";
 import StatusCard from "./StatusCard";
+import ActionCard from "./ActionCard";
+
 
 type Step = {
   id: number;
@@ -116,6 +117,45 @@ export default function PartnerDashboard() {
                 
                 />
             )
+        }
+
+        {
+          activeStep==5 && (
+            userData?.videoKycStatus==="approved" ? (
+            <StatusCard
+            icon={<Check size={18}/>}
+            title={"video kyc approved"}
+            desc={"you can now proceed to pricing."}
+            
+            />
+          ): userData?.videoKycStatus==="rejected" ? (
+            <RejectionCard
+            title={"video kyc rejected"}
+            reason={userData?.videoKycRejectionReason}
+            actionLabel="Request Again"
+            
+            />
+          ) : userData?.videoKycStatus==="in_progress" && userData?.videoKycRoomId ?(
+            <ActionCard
+            icon={<Video size={18}/>}
+            title={"Admin started video Kyc"}
+            button={"Join Call"}
+            onclick={
+              () => route.push(`/video-kyc/${userData.videoKycRoomId}`)
+            }
+            
+            
+            />
+          ):(
+            <StatusCard
+            icon={<Clock1/>}
+            title="Waiting for Admin"
+            desc="Admin will initiate Video KYC shortly."
+            />
+          ) 
+
+          )
+          
         }
       </div>
     </div>

@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 type VideoKycStatus = "not_required" | "pending" | "in_progress" | "approved" | "rejected"
 
 export interface IUser extends Document{
+    _id?: mongoose.Types.ObjectId | string;
     name:string;
     email:string;
     password?:string;
