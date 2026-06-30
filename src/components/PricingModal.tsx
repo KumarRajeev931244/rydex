@@ -25,7 +25,7 @@ export default function PricingModal({open,onClose,data}:PropsType){
         if(data){
             setPreview(data?.imageUrl || null)
             setBaseFare(data?.baseFare?.toString() || "")
-            setPricePerKm(data?.pricePerKM?.toString() || "")
+            setPricePerKm(data?.pricePerKm?.toString() || "")
             setWaitingCharge(data?.waitingCharge?.toString() || "")
         }
     }, [data]);
@@ -35,7 +35,7 @@ export default function PricingModal({open,onClose,data}:PropsType){
         try {
             const formData = new FormData();
             formData.append("baseFare",baseFare)
-            formData.append("watingCharge",waitingCharge)
+            formData.append("waitingCharge",waitingCharge)
             formData.append("pricePerKm",pricePerKm)
             if(image){
                 formData.append("image",image)

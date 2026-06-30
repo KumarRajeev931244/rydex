@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-type vehicleType = "bike" | "car" | "loading" | "truck" | "auto"
+export type vehicleType = "bike" | "car" | "loading" | "truck" | "auto"
 
 export interface IVehicle{
     owner:mongoose.Types.ObjectId
@@ -9,7 +9,7 @@ export interface IVehicle{
     number:string
     imageUrl?:string,
     baseFare?:number,
-    pricePerKM?:number,
+    pricePerKm?:number,
     waitingCharge?:number,
     status:"approved" | "pending" | "rejected",
     rejectionReason?:string,
@@ -41,7 +41,7 @@ const vehicleSchema = new mongoose.Schema<IVehicle>({
     },
     imageUrl:String,
     baseFare:Number,
-    pricePerKM:Number,
+    pricePerKm:Number,
     waitingCharge:Number,
     status:{
         type:String,

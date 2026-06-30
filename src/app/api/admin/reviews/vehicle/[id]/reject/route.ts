@@ -4,7 +4,7 @@ import User from "@/models/user.model";
 import Vehicle from "@/models/vehicle.model";
 import { NextRequest } from "next/server";
 
-export async function GET(
+export async function POST(
     req:NextRequest,
     context:{params:Promise<{id:string}>}
 ) {
@@ -16,6 +16,7 @@ export async function GET(
                         {status:400}
                     )
                 }
+                const {reason}  = await req.json()
                 await connectDb()
                 const vehicleId = (await context.params).id
                 const vehicle = await Vehicle.findById(vehicleId)
@@ -27,27 +28,18 @@ export async function GET(
                     )
                 }
 
-                vehicle.status="approved"
-                vehicle.rejectionReason=undefined
+                vehicle.status="rejected"
+                vehicle.rejectionReason=reason
                 await vehicle.save()
 
-                const partner = await User.findById(vehicle.owner)
-                if(!partner){
-                    return Response.json(
-                        {message:"partner not found"},
-                        {status:400}
-                    )
-
-                }
-                partner.patnerOnBoardingStep=7
-                await partner.save()
+                
                  return Response.json(
                         vehicle,
                         {status:200}
                     )
     } catch (error) {
          return Response.json(
-                        {message:"vehicle approve get error", error},
+                        {message:"vehicle rejected error", error},
                         {status:500}
                     )
         

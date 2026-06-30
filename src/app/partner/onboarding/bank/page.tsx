@@ -50,6 +50,7 @@ export default function Page() {
       setIfsc(data.partnerBank.ifsc)
       setMobileNumber(data.mobileNumber)
       setUpi(data.partnerBank.upi)
+      router.push("/")
       
     } catch (error:any ) {
       console.log("bank error:",error);
