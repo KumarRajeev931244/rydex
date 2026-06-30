@@ -47,8 +47,8 @@ export default function Content({data,type}:any){
             </div>
 
             {data.map((item:any,index:any) => {
-                const name = item.name
-                const email = item.email
+                const name = item.name || item.owner.name
+                const email = item.email || item.owner.email
                 return (
                     <motion.div
                     initial={{opacity:0, y:10}}
