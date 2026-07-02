@@ -9,6 +9,11 @@
   --color-black: #000000;
   --radius-3xl: 1.5rem;
   --blur-sm: 4px;
+  
+  --container-md: 28rem; /* Tailwind’s default for max-w-md */
+  --color-zinc-100: #f4f4f5; /* Tailwind’s zinc-100 */
+  --spacing: 0.25rem; /* Tailwind’s base spacing unit */
+
 }
 .fixed.inset-0 {
   inset: 0; /* ensure full coverage */
