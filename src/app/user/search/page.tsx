@@ -1,19 +1,28 @@
 "use client";
-import React, { useState } from "react";
-import { motion } from "motion/react";
-import { div } from "motion/react-client";
+import React, { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowLeft, MapPin, Navigation } from "lucide-react";
+import { ArrowLeft, Bike, BikeIcon, Car, MapPin, Navigation, Truck } from "lucide-react";
+import axios from "axios";
+import { IVehicle } from "@/models/vehicle.model";
 
 const SearchMap = dynamic(() => import("@/components/SearchMap"), {
   ssr: false,
 });
 
+
+const VEHICLE_META:any = {
+  bike: {label:"Bike", Icon:Bike},
+  auto: {label:"Auto", Icon:Car},
+  car: {label:"Car", Icon:Car},
+  loading: {label:"Loading", Icon:Truck},
+  truck: {label:"Truck", Icon:Truck}
+
+}
 function Page() {
   const router = useRouter();
   const params = useSearchParams()
-   
     const [pickUp, setPickUp] = useState(params.get("pickup") || "");
     const [drop, setDrop] = useState(params.get("drop") || "");
     const mobile = params.get("mobile") 
@@ -21,9 +30,39 @@ function Page() {
     const pickUpLon = Number(params.get("pickuplon"))
     const dropLat = Number(params.get("droplat"))
     const dropLon = Number(params.get("droplon"))
-    const vehicle = params.get("vehicle")
+    const vehicle = params.get("vehicle") 
     const [km, setKm] = useState<number>();
+    const [vehicles, setVehicles] = useState<IVehicle[]>([]);
+    const [loading, setLoading] = useState(false);
 
+
+    // const meta = VEHICLE_META[vehicle]
+    
+
+    const getNearByVehicles = async(latitude:number,longitude:number,vehicleType:string | null)=> {
+      
+      setLoading(true)
+      
+      try {
+        const {data} = await axios.post("/api/vehicles/near-by",{
+          latitude,longitude,vehicleType
+        })
+        setVehicles(data)
+        setLoading(false)
+        console.log(vehicles);
+        
+        
+        console.log("getNearByVehicles:",data);
+      } catch (error) {
+        console.log(`error:${error}`);
+        setLoading(false)
+      
+      }
+
+    }
+    useEffect(() => {
+      getNearByVehicles(pickUpLat,pickUpLon,vehicle)   
+    }, [pickUpLat,pickUpLon,pickUp]);
     
     
   return (
@@ -89,7 +128,38 @@ function Page() {
             
 
           </motion.div>
+
+          <motion.div
+        initial={{opacity:0}}
+        animate={{opacity:1}}
+        transition={{delay:0.2}}
+        className="flex items-center justify-between mb-4"
+        
+        >
+          <div>
+            <h2 className="text-zinc-900 text-lg font-black tracking-tight">
+              {loading ? "Finding Vehicles" : vehicles.length >0? "Available" : "No nearby Vehicles" }
+            </h2>
+            {/* {
+              meta && 
+              <div className="text-zinc-400 text-xs mt-0.5">
+                {meta.label} rides near your pickup
+              </div>
+            } */}
+          </div>
+
+          {/* <AnimatePresence mode="wait">
+            {loading ? (
+
+            )}
+
+          </AnimatePresence> */}
+
+        </motion.div>
         </div>
+
+        
+
 
       </motion.div>
     </div>
