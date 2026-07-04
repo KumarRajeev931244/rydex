@@ -36,7 +36,7 @@ function Page() {
     const [loading, setLoading] = useState(false);
 
 
-    // const meta = VEHICLE_META[vehicle]
+    const meta = VEHICLE_META[vehicle]
     
 
     const getNearByVehicles = async(latitude:number,longitude:number,vehicleType:string | null)=> {
@@ -140,12 +140,12 @@ function Page() {
             <h2 className="text-zinc-900 text-lg font-black tracking-tight">
               {loading ? "Finding Vehicles" : vehicles.length >0? "Available" : "No nearby Vehicles" }
             </h2>
-            {/* {
+            {
               meta && 
               <div className="text-zinc-400 text-xs mt-0.5">
                 {meta.label} rides near your pickup
               </div>
-            } */}
+            }
           </div>
 
           {/* <AnimatePresence mode="wait">
