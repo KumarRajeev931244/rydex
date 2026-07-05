@@ -37,7 +37,8 @@ export async function POST(req:NextRequest) {
 
         if(partnerIds.length==0){
             return NextResponse.json(
-                {message:"vehicles not found"},
+                // {message:"vehicles not found"},
+                [],
                 {status:200}
             )
         }
