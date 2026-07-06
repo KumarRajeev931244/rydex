@@ -8,7 +8,7 @@ const VEHICLE_REGEX = /^[A-Z]{2}[0-9]{2}[A-Z]{1,2}[0-9]{4}$/;
 
 export async function POST(req: Request) {
   try {
-    await connectDb;
+    await connectDb();
     const session = await auth();
     if (!session || !session.user?.email) {
       return Response.json({ message: "unauthorised" }, { status: 400 });
@@ -84,7 +84,7 @@ export async function POST(req: Request) {
 
 export async function GET(req:NextRequest){
     try {
-        await connectDb;
+        await connectDb();
     const session = await auth();
     if (!session || !session.user?.email) {
       return Response.json({ message: "unauthorised" }, { status: 400 });

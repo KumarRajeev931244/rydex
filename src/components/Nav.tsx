@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {AnimatePresence, motion} from "motion/react"
 import Image from 'next/image'
 import Link from 'next/link'
@@ -10,6 +10,7 @@ import { AppDispatch, RootState } from '@/redux/store'
 import { Bike, Car, ChevronRight, LogOut, Menu, Truck, X } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import { setUserData } from '@/redux/userSlice'
+import axios from 'axios'
 
 
 
@@ -20,8 +21,25 @@ function Nav(){
     const pathName = usePathname()
     const [authOpen,setAuthOpen] = useState(false)
     const [menuOpen,setMenuOpen] = useState(false)
+    const [pendingCount, setPendingCount] = useState();
     const router = useRouter()
      const dispatch = useDispatch<AppDispatch>()
+
+     const fetchCount = async() => {
+        try {
+            const {data} = await axios.get("/api/partner/booking/pending-request-count")
+            setPendingCount(data)
+            console.log(data);
+        } catch (error) {
+            console.log(error);
+            
+        }
+     }
+     useEffect(() => {
+        if(userData?.role == "partner"){
+            fetchCount()
+        }
+     }, [userData?.role]);
 
     const handleLogout = async() => {
         await signOut({redirect:false})
@@ -39,7 +57,16 @@ function Nav(){
             <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between">
                 <Image src={"/rydex.png"} alt='logo' width={58} height={58} priority/>
                 <div className='hidden md:flex items-center gap-10'>
-                {Nav_Items.map((items,idx)=> {
+                    {userData?.role == "partner" ? (
+                        <>
+                        <Link className='relative text-sm font-medium text-gray-300 hover:text-white transition' href={"/"}>Home</Link>
+                        <Link className='relative text-sm font-medium text-gray-300 hover:text-white transition' href={"/partner/pending-request"}>Pending Request  <span className='absolute -top-2 -right-5 w-6 h-6 bg-white text-black text-xs rounded-full flex items-center justify-center font-bold'>{pendingCount ?? 0}</span>
+                        </Link>
+                        <Link className='relative text-sm font-medium text-gray-300 hover:text-white transition' href={"/partner/bookings"}>Booking</Link>
+                        <Link className='relative text-sm font-medium text-gray-300 hover:text-white transition' href={"/partner/active-ride"}>Active Ride</Link>
+                        </>
+                    ):
+                    Nav_Items.map((items,idx)=> {
                     let href;
                     if(items=="Home"){
                         href = '/'
@@ -48,7 +75,10 @@ function Nav(){
                     }    
                     const active = href == pathName
                     return <Link key={idx} href={href} className={`text-sm font-medium transition ${active ? "text-white" : "text-gray-400 hover:text-white"}`} >{items}</Link>
-                })}
+                })
+                    
+                    }
+                
                 </div>
                 <div className="flex items-center gap-3 relative">
                     <div className="hidden md:block relative">
