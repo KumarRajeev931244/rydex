@@ -18,7 +18,7 @@ export async function GET(
             )
 
         }
-        booking.bookingStatus = "rejected"
+        booking.bookingStatus = "cancelled"
         await booking.save()
         return NextResponse.json(
                 {success:"true"},
@@ -28,7 +28,7 @@ export async function GET(
     } catch (error) {
         console.log(error);
         return NextResponse.json(
-                {message:"reject booking error",error},
+                {message:"cancel booking error",error},
                 {status:500}
             )
         
