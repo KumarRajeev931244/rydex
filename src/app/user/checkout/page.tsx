@@ -126,6 +126,54 @@ function page() {
     return () => {clearTimeout(t)}
   }, [status]);
 
+  const handleConfirmPayment = async() => {
+    if(!booking || !paymentMethod) return;
+    try {
+      if(paymentMethod=="online"){
+        const razorpayLoad = await loadRazorpayScript()
+        if(!razorpayLoad){
+          alert("razorpay script failed to load")
+        }
+        const {data} = await axios.post("/api/payment/create",{
+          bookingId:booking._id
+        })
+        // console.log(data);
+        
+        const paymentObject = new (window as any).Razorpay({
+          key:process.env.NEXT_PUBLIC_RAZORPAY_API_ID,
+          amount:data.amount,
+          currency:"INR",
+          name:"RYDEX",
+          description:"Ride payment",
+          order_id:data.orderId,
+        })
+        paymentObject.open()
+      }
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+
+  const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      if(typeof window==="undefined"){
+        resolve(false)
+        return
+      }
+
+      if((window as any).Razorpay){
+        resolve(true)
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js"
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false)
+      document.body.appendChild(script)
+    })
+  }
   return (
     <div className="min-h-screen bg-zinc-100 px-4 py-12">
       <div className="relative max-w-6xl mx-auto z-10">
@@ -435,6 +483,7 @@ function page() {
                     })}
                    </div>
                    <motion.button
+                   onClick={handleConfirmPayment}
                    whileTap={{scale:0.97}}
                    whileHover={paymentMethod ? {scale:1.02}:{}}
                    disabled={!paymentMethod}
