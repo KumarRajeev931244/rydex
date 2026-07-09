@@ -4,6 +4,7 @@ import { BookingStatus, PaymentStatus } from "@/models/booking.model";
 import axios from "axios";
 import { Clock, IndianRupee, Loader2, MapPin, Navigation } from "lucide-react";
 import {motion} from "motion/react"
+import { useRouter } from "next/navigation";
 
 import { useEffect, useState } from "react";
 
@@ -47,12 +48,13 @@ import { useEffect, useState } from "react";
 function page() {
     const [booking, setBooking] = useState<IBooking[]>([]);
     const [loading, setLoading] = useState(false);
-
+    const router = useRouter()
 
     const handleAccept = async(id:string) =>{
         try {
             const {data} = await axios.get(`/api/partner/booking/${id}/accept`)
-            console.log(data);
+            // console.log(data);
+            router.push("/partner/booking")
         } catch (error) {
             console.log(error);
             
@@ -63,7 +65,8 @@ function page() {
         const handleReject = async(id:string) =>{
         try {
             const {data} = await axios.get(`/api/partner/booking/${id}/reject`)
-            console.log(data);
+            window.location.reload()
+            // console.log(data);
         } catch (error) {
             console.log(error);
             

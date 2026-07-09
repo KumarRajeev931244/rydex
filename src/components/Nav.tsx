@@ -62,7 +62,7 @@ function Nav(){
                         <Link className='relative text-sm font-medium text-gray-300 hover:text-white transition' href={"/"}>Home</Link>
                         <Link className='relative text-sm font-medium text-gray-300 hover:text-white transition' href={"/partner/pending-request"}>Pending Request  <span className='absolute -top-2 -right-5 w-6 h-6 bg-white text-black text-xs rounded-full flex items-center justify-center font-bold'>{pendingCount ?? 0}</span>
                         </Link>
-                        <Link className='relative text-sm font-medium text-gray-300 hover:text-white transition' href={"/partner/bookings"}>Booking</Link>
+                        <Link className='relative text-sm font-medium text-gray-300 hover:text-white transition' href={"/partner/booking"}>Booking</Link>
                         <Link className='relative text-sm font-medium text-gray-300 hover:text-white transition' href={"/partner/active-ride"}>Active Ride</Link>
                         </>
                     ):
@@ -71,7 +71,7 @@ function Nav(){
                     if(items=="Home"){
                         href = '/'
                     }else{
-                        href=`/${items.toLowerCase()}`
+                        href=`/user/${items.toLowerCase()}`
                     }    
                     const active = href == pathName
                     return <Link key={idx} href={href} className={`text-sm font-medium transition ${active ? "text-white" : "text-gray-400 hover:text-white"}`} >{items}</Link>
