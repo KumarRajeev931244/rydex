@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
+import { getSocket } from "@/lib/socket";
 
 const VEHICLE_META: any = {
   bike: { label: "Bike", Icon: Bike },
@@ -127,6 +128,22 @@ function page() {
     },2000)
     return () => {clearTimeout(t)}
   }, [status]);
+
+  useEffect(() => {
+          const socket = getSocket()
+          socket.on("accept-booking",(data) => {
+              // console.log("data:",data);
+              setStatus(data)
+          })
+          socket.on("reject-booking",(data) => {
+              // console.log("data:",data);
+              setStatus(data)
+          })
+          return () => {
+              socket.off("accept-booking")
+              socket.off("reject-booking")
+          }
+      }, []);
 
   const handleConfirmPayment = async() => {
     if(!booking || !paymentMethod) return;
@@ -336,7 +353,7 @@ function page() {
             <div className="h-1 bg-zinc-900" />
             <div className="flex-1 p-8 sm:p-10 flex flex-col">
               <AnimatePresence mode="wait">
-                {status == "idle" && (
+                {status == "idle" || status == "rejected"  &&  (
                   <motion.div
                     key="idle"
                     initial={{ opacity: 0, y: 12 }}

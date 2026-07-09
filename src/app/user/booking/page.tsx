@@ -120,7 +120,7 @@ function page() {
               </div>
               <div>
                 <h1 className="text-2xl font-semibold text-gray-900">
-                  Partner Bookings
+                  My Bookings
                 </h1>
                 <p className="text-gray-500 text-sm mt-1">
                   {" "}
@@ -192,7 +192,7 @@ function page() {
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
                           <h3 className="font-semibold text-gray-900">
-                            {b.user.name.toUpperCase() || "Customer"}{" "}
+                            {b.driver.name.toUpperCase() || "Driver"}{" "}
                           </h3>
                           <span
                           className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(b.bookingStatus)}`}
@@ -201,7 +201,7 @@ function page() {
 
                         <div className="flex items-center gap-1 mt-1 text-xs text-gray-600">
                             <Phone className="w-3 h-3"/>
-                            <span>{b.userMobileNumber}</span>
+                            <span>{b.driverMobileNumber}</span>
                         </div>
                       </div>
                     </div>
@@ -259,7 +259,7 @@ function page() {
                         {b.bookingStatus!=="completed" && (
                       <div className="flex item-center gap-2">
                         <button
-                        onClick={() => router.push("/partner/active-ride")}
+                        onClick={() => router.push("/user/active-ride")}
                         className="flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-4 py-1.5 rounded-lg transition-colors
                         "
                         >

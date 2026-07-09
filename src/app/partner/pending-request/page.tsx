@@ -1,5 +1,6 @@
 "use client"
 
+import { getSocket } from "@/lib/socket";
 import { BookingStatus, PaymentStatus } from "@/models/booking.model";
 import axios from "axios";
 import { Clock, IndianRupee, Loader2, MapPin, Navigation } from "lucide-react";
@@ -62,6 +63,7 @@ function page() {
 
     }
 
+
         const handleReject = async(id:string) =>{
         try {
             const {data} = await axios.get(`/api/partner/booking/${id}/reject`)
@@ -88,6 +90,17 @@ function page() {
     }
     useEffect(() => {
         fetchPendingRequest()
+    }, []);
+
+    useEffect(() => {
+        const socket = getSocket()
+        socket.on("new-booking",(data) => {
+            console.log("data:",data);
+            setBooking((prev) => [...prev,data])
+        })
+        return () => {
+            socket.off("new-booking")
+        }
     }, []);
     return (  
         <div className="min-h-screen bg-[#f4f5f7]">
