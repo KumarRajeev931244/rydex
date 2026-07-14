@@ -11,6 +11,7 @@ import { Bike, Car, ChevronRight, LogOut, Menu, Truck, X } from 'lucide-react'
 import { signOut } from 'next-auth/react'
 import { setUserData } from '@/redux/userSlice'
 import axios from 'axios'
+import { getSocket } from '@/lib/socket'
 
 
 
@@ -21,7 +22,7 @@ function Nav(){
     const pathName = usePathname()
     const [authOpen,setAuthOpen] = useState(false)
     const [menuOpen,setMenuOpen] = useState(false)
-    const [pendingCount, setPendingCount] = useState();
+    const [pendingCount, setPendingCount] = useState(0);
     const router = useRouter()
      const dispatch = useDispatch<AppDispatch>()
 
@@ -40,6 +41,16 @@ function Nav(){
             fetchCount()
         }
      }, [userData?.role]);
+
+     useEffect(() => {
+             const socket = getSocket()
+             socket.on("new-booking",(data) => {
+                setPendingCount(prev => prev + 1)                 
+             })
+             return () => {
+                 socket.off("new-booking")
+             }
+         }, []);
 
     const handleLogout = async() => {
         await signOut({redirect:false})

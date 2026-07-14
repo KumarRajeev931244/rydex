@@ -353,7 +353,7 @@ function page() {
             <div className="h-1 bg-zinc-900" />
             <div className="flex-1 p-8 sm:p-10 flex flex-col">
               <AnimatePresence mode="wait">
-                {status == "idle" || status == "rejected"  &&  (
+                {(status == "idle" || status == "rejected" ) &&  (
                   <motion.div
                     key="idle"
                     initial={{ opacity: 0, y: 12 }}
