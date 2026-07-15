@@ -14,7 +14,7 @@ export interface IBooking{
     pickUpAddress:string
     dropAddress:string
 
-    PickUpLocation:{
+    pickUpLocation:{
         type:"Point",
         coordinates:[number, number]
     }
@@ -67,7 +67,7 @@ const bookingSchema = new mongoose.Schema<IBooking>({
         required:true
     },
 
-    PickUpLocation:{
+    pickUpLocation:{
         type:{
             type:String,
             enum:["Point"]
