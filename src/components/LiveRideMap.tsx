@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 type Props = {
-  driverLocation: [Number, Number] | null;
-  pickUpLocation: [Number, Number] | null;
-  dropLocation: [Number, Number] | null;
+  driverLocation: [number, number] | null;
+  pickUpLocation: [number, number] | null;
+  dropLocation: [number, number] | null;
   mapStatus: string;
   onStatus:(data:{
     distanceToPickUp:number,

@@ -107,7 +107,7 @@ function page() {
   const displayEta = status==="confirmed"?etaToPickUp:etaToDrop
   const displayDistance = status==="confirmed"?distanceToPickUp:distanceToDrop
    const paymentStatus = PAYMENT_BADGE[booking?.paymentStatus!??"pending"]
-  const panelProps ={isActive,displayDistance,displayEta,cfg,status,booking,paymentStatus,canChat,chatOpen,chatToogle}
+  const panelProps ={isActive,displayDistance,displayEta,cfg,status,booking,paymentStatus,canChat,chatOpen,chatToogle,currentRole:"driver"}
  
   if (loading) {
     return (
