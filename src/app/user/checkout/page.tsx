@@ -175,7 +175,7 @@ function page() {
             setLoading(false)
             if(data.success){
               setStatus("confirmed")
-              window.location.href = `/ride/${booking._id}`
+              window.location.href = `/user/ride/${booking._id}`
             }
           }
           
@@ -186,7 +186,7 @@ function page() {
         setLoading(false)
         if(data.success){
           setStatus("confirmed")
-          window.location.href = `/ride/${booking._id}`
+          window.location.href = `/user/ride/${booking._id}`
         }
       }
       
@@ -597,7 +597,7 @@ function page() {
                       </motion.p>
                    </div>
                    <motion.button
-                   onClick={() => {window.location.href=`/ride/${booking._id}`}}
+                   onClick={() => {window.location.href=`/user/ride/${booking._id}`}}
                    initial={{ opacity: 0, y:8}}
                     animate={{ opacity: 1, y:0 }}
                     transition={{delay:0.5}}

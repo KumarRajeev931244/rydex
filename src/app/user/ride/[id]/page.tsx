@@ -7,6 +7,7 @@ import dynamic from "next/dynamic";
 import { motion, spring } from "motion/react";
 import { ChevronUp, Zap } from "lucide-react";
 import PanelContent from "@/components/PanelContent";
+import { useParams } from "next/navigation";
 import { getSocket } from "@/lib/socket";
 const LiveRideMap = dynamic(() => import("@/components/LiveRideMap"), {
   ssr: false,
@@ -95,32 +96,16 @@ function page() {
   const [chatOpen, setChatOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
+  const {id} = useParams()
   useEffect(() => {
     async function fetch() {
       try {
         setLoading(true);
-        const { data } = await axios.get("/api/partner/my-active");
-        // console.log("active-ride data:", data);
+        const { data } = await axios.post("/api/user/active-ride",
+            {bookingId:id}
+        );
+        console.log("active-ride user data:", data);
         setStatus(data.bookingStatus);
-
-
-        if (Array.isArray(data.pickUpLocation?.coordinates)) {
-  setPickUpPos([
-    data.pickUpLocation.coordinates[1],
-    data.pickUpLocation.coordinates[0],
-  ]);
-} else {
-  setPickUpPos(null);
-}
-
-if (Array.isArray(data.dropLocation?.coordinates)) {
-  setDropPos([
-    data.dropLocation.coordinates[1],
-    data.dropLocation.coordinates[0],
-  ]);
-} else {
-  setDropPos(null);
-}
         setPickUpPos([
           data?.pickUpLocation?.coordinates[1],
           data?.pickUpLocation?.coordinates[0],
@@ -139,44 +124,19 @@ if (Array.isArray(data.dropLocation?.coordinates)) {
     fetch();
   }, []);
 
-  useEffect(() => {
-    if (!navigator.geolocation) return;
+ useEffect(() => {
     const socket = getSocket()
-    const watchId = navigator.geolocation.watchPosition(
-      (pos) => {
-        const lat = pos.coords.latitude;
-        const lon = pos.coords.longitude;
-        setDriverPos([lat, lon]);
-        socket.emit("driver-location-update",{
-          bookingId:booking?._id,
-          latitude:lat,
-          longitude:lon,
-          status:status
-        })
-
-      },
-      (error) => {
-        console.log("gps error", error);
-      },
-      { enableHighAccuracy: true, maximumAge: 2000, timeout: 10000 },
-    );
-    return () => {
-      navigator.geolocation.clearWatch(watchId);
-    };
-  }, [booking?._id]);
-
-   useEffect(() => {
-    if(!booking?._id) return
-      const socket = getSocket()
-      socket.emit("join-ride",booking?._id)
-      socket.on("driver-location",({latitude,longitude})=>{
+    socket.emit("join-ride",id)
+    socket.on("driver-location",({latitude,longitude})=>{
         setDriverPos([latitude,longitude])
     })
-      return ()=> {
+    return ()=> {
         socket.off("join-ride")
         socket.off("driver-location")
-      }
-   }, [booking?._id]);
+    
+    }
+ }, []);
+
   const chatToogle = () => {
     setChatOpen((prev) => !prev);
   };
@@ -199,7 +159,7 @@ if (Array.isArray(data.dropLocation?.coordinates)) {
     canChat,
     chatOpen,
     chatToogle,
-    currentRole: "driver",
+    currentRole: "user",
   };
 
   if (loading) {
@@ -257,7 +217,7 @@ if (Array.isArray(data.dropLocation?.coordinates)) {
       >
         <div className="bg-zinc-950 px-6 py-5 flex-shrink-0">
           <p className="text-zinc-500 text-[10px] tracking-[0.2em] uppercase font-semibold mb-1">
-            Driver Panel
+            User Panel
           </p>
           <div className="flex items-center justify-between">
             <h1 className="text-white text-xl font-bold">Active Ride</h1>
