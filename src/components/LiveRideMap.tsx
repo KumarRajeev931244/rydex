@@ -227,7 +227,7 @@ function LiveRideMap({
           url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
         />
 
-        {showPickMarker && (
+        {showPickMarker && pickUpLocation && (
           <Marker
             position={pickUpLocation as any}
             icon={pickUpIcon}

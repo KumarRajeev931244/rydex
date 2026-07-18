@@ -4,7 +4,7 @@ import { RootState } from "@/redux/store";
 import axios from "axios";
 import { Send, Sparkle, Sparkles, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 
 type message={
@@ -23,6 +23,11 @@ function RideChat({currentRole,bookingId,userName,driverName}:any) {
     const {userData} = useSelector((state:RootState)=>state.user)
     const [showAI, setShowAI] = useState(false);
     const [aiLoading, setAiLoading] = useState(false);
+
+    const messagesEndRef = useRef<HTMLDivElement>(null)
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({behavior:"smooth"})
+    }, [messages]);
 
     const sendMessage=async()=> {
         const socket = getSocket()
@@ -60,11 +65,11 @@ function RideChat({currentRole,bookingId,userName,driverName}:any) {
     }, []);
 
     useEffect(() => {
-        const socket = getSocket();
-        socket.on("chat-message",(data)=> {
+        const socket = getSocket()
+        socket.on("chat-message",(data)=>{
             setMessages(prev=>[...prev,data])
         })
-        return ()=>{socket.off("chat-message")}
+        return ()=> { socket.off("chat-message")}
     }, []);
 
     const getAISuggesstion=async()=> {
@@ -150,7 +155,10 @@ function RideChat({currentRole,bookingId,userName,driverName}:any) {
                     )
                 })
             )}
+             <div ref={messagesEndRef}/>
         </div>
+
+       
 
         <AnimatePresence>
             {

@@ -9,6 +9,7 @@ import { ChevronUp, Zap } from "lucide-react";
 import PanelContent from "@/components/PanelContent";
 import { useParams } from "next/navigation";
 import { getSocket } from "@/lib/socket";
+import CompletedScreen from "@/components/completedScreen";
 const LiveRideMap = dynamic(() => import("@/components/LiveRideMap"), {
   ssr: false,
 });
@@ -140,6 +141,12 @@ function page() {
   const chatToogle = () => {
     setChatOpen((prev) => !prev);
   };
+
+  if(status==="completed" && booking){
+    return (
+      <CompletedScreen booking={booking} role="user"/>
+    )
+    }
 
   const canChat = booking?.bookingStatus === "confirmed";
   const cfg = STATUS_LABEL[booking?.bookingStatus! ?? "confirmed"];

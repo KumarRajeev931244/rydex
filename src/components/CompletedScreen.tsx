@@ -1,0 +1,62 @@
+"use client"
+import { motion } from "motion/react";
+import { IBooking, PaymentStatus } from "@/models/booking.model";
+import { CheckCircle, CheckCircle2, IndianRupee } from "lucide-react";
+
+const PAYMENT_BADGE: Record<PaymentStatus , { label: string; cls: string }> = {
+  pending: { label: "Pending", cls: "bg-amber-100 text-amber-700" },
+  paid: { label: "Paid", cls: "bg-emerald-100 text-emerald-700" },
+  cash: { label: "Cash", cls: "bg-zinc-100 text-zinc-700" },
+  failed: { label: "Failed", cls: "bg-red-100 text-red-700" },
+};
+
+function CompletedScreen({booking,role}:{booking:IBooking,role:string}) {
+    return ( 
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1}}
+          transition={{  duration: 0.5 }}
+          className="h-screen w-full bg-zinc-950 flex flex-col overflow-y-auto"
+        >
+            <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
+                <motion.div
+                  initial={{ opacity: 0, scale:0.5 }}
+          animate={{ opacity: 1, scale:1}}
+          transition={{ ease:[0.22,1,0.36,1], duration: 0.6 }}
+          className="mb-8"
+                >
+                    <div className="w-32 h-32 rounded-full bg-emerald-400/10 flex items-center justify-center">
+                        <div className="w-24 h-24 rounded-full bg-emerald-400/10 flex items-center justify-center">
+                            <CheckCircle2 size={52 } className="text-emerald-400"/>
+                        </div>
+                    </div>
+
+                </motion.div>
+                <motion.div
+                initial={{ opacity: 0, y:24}}
+          animate={{ opacity: 1, y:0}}
+          transition={{ delay:0.2, duration: 0.5 }}
+          className="w-full max-w-sm"
+                
+                >
+                    <p className="text-zinc-400 text-xs uppercase tracking-[0.25em] font-semibold text-center mb-2">Trip Completed</p>
+                    <h1 className="text-white text-3xl font-black text-center mb-1">Ride Completed!</h1>
+                    <p className="text-zinc-500 text-sm text-center mb-8">{role=="driver"?"You have successfully dropped the customer":"You have successfully droped by driver"}</p>
+                    <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 mb-3">
+                        <p className="text-zinc-500 text-[10px] uppercase tracking-widest font-semibold mb-1 text-center">Fare Collected</p>
+                        <p className="text-white text-5xl font-black flex items-center justify-center gap-1 mb-4 "> <IndianRupee size={30} strokeWidth={2.5}/> {booking.fare}</p>
+                        <div className="flex items-center justify-between text-xs border-t border-zinc-800 pt-3">
+                            <span></span>
+                            <span></span>
+
+                        </div>
+                    </div>
+
+                </motion.div>
+            </div>
+
+        </motion.div>
+     );
+}
+
+export default CompletedScreen;
