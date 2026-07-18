@@ -9,7 +9,7 @@ import { ChevronUp, Zap } from "lucide-react";
 import PanelContent from "@/components/PanelContent";
 import { useParams } from "next/navigation";
 import { getSocket } from "@/lib/socket";
-import CompletedScreen from "@/components/completedScreen";
+import CompletedScreen from "@/components/CompleteScreen";
 const LiveRideMap = dynamic(() => import("@/components/LiveRideMap"), {
   ssr: false,
 });

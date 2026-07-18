@@ -7,6 +7,7 @@ import Kpi from "./Kpi";
 import TabButton from "./TabButton";
 import { AnimatePresence,motion } from "motion/react";
 import Content from "./Content";
+import AdminEarning from "./AdminEarning";
 
 
 type Stats = {
@@ -108,8 +109,9 @@ export default function AdminDashboard(){
                         {activeTab=='vehicle' && <Content data={vehicleReview ?? []} type={"vehicle"}/>}
                     </motion.div>
                 </AnimatePresence>
- 
+   <AdminEarning/>
             </main>
+          
             
         </div> 
     )

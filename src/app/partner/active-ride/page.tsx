@@ -8,7 +8,7 @@ import { AnimatePresence, motion, spring } from "motion/react";
 import { ArrowRight, ChevronUp, KeyRound, MapPin, Navigation, Zap } from "lucide-react";
 import PanelContent from "@/components/PanelContent";
 import { getSocket } from "@/lib/socket";
-import CompletedScreen from "@/components/completedScreen";
+import CompletedScreen from "@/components/CompleteScreen";
 const LiveRideMap = dynamic(() => import("@/components/LiveRideMap"), {
   ssr: false,
 });
@@ -253,6 +253,7 @@ function page() {
     if (!booking?._id) return;
     const socket = getSocket();
     socket.emit("join-ride", booking?._id);
+    
     socket.on("driver-location", ({ latitude, longitude }) => {
       setDriverPos([latitude, longitude]);
     });
@@ -261,6 +262,8 @@ function page() {
       socket.off("driver-location");
     };
   }, [booking?._id]);
+
+
   const chatToogle = () => {
     setChatOpen((prev) => !prev);
   };

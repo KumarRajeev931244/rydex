@@ -39,7 +39,8 @@ function RideChat({currentRole,bookingId,userName,driverName}:any) {
             })
             console.log("send message:",data);
             socket.emit("chat-message",data)
-
+             setMessages(prev=>[...prev,data])
+             setText("")
             // setMessages([...messages,data])
         } catch (error) {
             console.log(error);
@@ -48,15 +49,16 @@ function RideChat({currentRole,bookingId,userName,driverName}:any) {
     }
 
     const getAllMessage=async()=> {
+        if (!bookingId) return
         try {
             const {data} = await axios.post("/api/chat/get-all",{
                 bookingId
             })
             console.log("get all message:",data);
             setMessages(data)
-            setLastMessages(data[0])
+            setLastMessages(data[data.length - 1]?.text ?? "")
         } catch (error:any) {
-            console.log(error.response.data.message);
+            console.log(error?.response?.data?.message);
             
         }
     }
@@ -64,14 +66,32 @@ function RideChat({currentRole,bookingId,userName,driverName}:any) {
         getAllMessage()
     }, []);
 
-    useEffect(() => {
-        const socket = getSocket()
-        socket.on("chat-message",(data)=>{
-            setMessages(prev=>[...prev,data])
-        })
-        return ()=> { socket.off("chat-message")}
-    }, []);
+    // useEffect(() => {
+    //     const socket = getSocket()
+    //     socket.on("chat-message",(data)=>{
+    //         setMessages(prev=>[...prev,data])
+    //     })
+    //     return ()=> { socket.off("chat-message")}
+    // }, []);
 
+    useEffect(() => {
+  if (!bookingId) return;  
+  const socket = getSocket();
+
+  socket.on("connect", () => {
+    socket.emit("join-ride", bookingId);     // join the ride room
+  });
+
+  // ✅ listen for chat messages
+  socket.on("chat-message", (data) => {
+    setMessages(prev => [...prev, data]);
+  });
+
+  return () => {
+    socket.off("chat-message");
+    socket.off("connect");
+  };
+}, [bookingId]);
     const getAISuggesstion=async()=> {
         setAiLoading(true)
         setShowAI(true)
@@ -148,7 +168,7 @@ function RideChat({currentRole,bookingId,userName,driverName}:any) {
                             }`}>
 
                                 <p className="break-words">{m.text}</p>
-                                <span className="text-[8px] text-gray-200"> {formatTime(m.createdAt)}</span>
+                                <span className={`text-[8px] ${isMine ? "text-gray-200" : "text-gray-400"}`}> {formatTime(m.createdAt)}</span>
                             </div>
 
                         </motion.div>
@@ -187,7 +207,7 @@ function RideChat({currentRole,bookingId,userName,driverName}:any) {
                                     ))}
                                 </div>
                             ):(
-                                <div className="flex flex-col gap1.5
+                                <div className="flex flex-col gap-1.5
                                 ">
                                     {suggesstion.map((s,i)=> (
                                         <motion.div
@@ -217,7 +237,7 @@ function RideChat({currentRole,bookingId,userName,driverName}:any) {
         </AnimatePresence>
 
         <div className="flex-shrink-0 px-4 pb-4 pt-2 bg-white">
-            <div className="flex items-center gap-2 bg-zinc-100 rounded-2xlj pl-3 py-1.5">
+            <div className="flex items-center gap-2 bg-zinc-100 rounded-2xl pl-3 py-1.5">
                 {messages.length > 0 && (
                     <motion.button
                     whileTap={{scale:0.9}}

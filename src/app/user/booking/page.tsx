@@ -257,7 +257,7 @@ function page() {
                                 : `bg-yellow-100 text-yellow-700`
                             }`}>{b.paymentStatus}</span>
                         </div>
-                        {b.bookingStatus!=="completed" && (
+                        {(b.bookingStatus=="completed" || b.bookingStatus=="confirmed" || b.bookingStatus=="started" ) && (
                       <div className="flex item-center gap-2">
                         <button
                         onClick={() => router.push(`/user/ride/${b._id}`)}

@@ -30,6 +30,14 @@ export async function POST(req:NextRequest) {
                 {status:400}
             )
          }
+
+         if(booking.paymentStatus === "cash"){
+            const adminCommission = booking.fare*0.10
+        const partnerAmount = booking.fare-adminCommission
+        booking.adminCommission= adminCommission
+        booking.partnerAmount = partnerAmount
+         }
+         booking.paymentStatus="paid"
          booking.bookingStatus="completed"
          booking.dropOtp=""
          booking.dropOtpExpires = undefined

@@ -1,16 +1,18 @@
 "use client"
 import { motion } from "motion/react";
 import { IBooking, PaymentStatus } from "@/models/booking.model";
-import { CheckCircle, CheckCircle2, IndianRupee } from "lucide-react";
+import { CheckCircle, CheckCircle2, IndianRupee, User } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-const PAYMENT_BADGE: Record<PaymentStatus , { label: string; cls: string }> = {
+const PAYMENT_BADGE: Record<any , { label: string; cls: string }> = {
   pending: { label: "Pending", cls: "bg-amber-100 text-amber-700" },
   paid: { label: "Paid", cls: "bg-emerald-100 text-emerald-700" },
   cash: { label: "Cash", cls: "bg-zinc-100 text-zinc-700" },
   failed: { label: "Failed", cls: "bg-red-100 text-red-700" },
 };
 
-function CompletedScreen({booking,role}:{booking:IBooking,role:string}) {
+function CompletedScreen({booking,role}:{booking:any,role:string}) {
+    const router = useRouter()
     return ( 
         <motion.div
           initial={{ opacity: 0 }}
@@ -46,11 +48,26 @@ function CompletedScreen({booking,role}:{booking:IBooking,role:string}) {
                         <p className="text-zinc-500 text-[10px] uppercase tracking-widest font-semibold mb-1 text-center">Fare Collected</p>
                         <p className="text-white text-5xl font-black flex items-center justify-center gap-1 mb-4 "> <IndianRupee size={30} strokeWidth={2.5}/> {booking.fare}</p>
                         <div className="flex items-center justify-between text-xs border-t border-zinc-800 pt-3">
-                            <span></span>
-                            <span></span>
+                            <span className="text-zinc-500">Payment Status</span>
+                            <span className={`px-2.5 py-1 rounded-full font-semibold  text-[11px] ${PAYMENT_BADGE[booking.paymentStatus]?.cls ?? "bg-zinc-700 text-zinc-800"}`}
+                            > {PAYMENT_BADGE[booking.paymentStatus]?.label ?? booking.paymentStatus}</span>
 
                         </div>
                     </div>
+                    {booking?.user && (
+                        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 flex items-center gap-3 mb-3">
+                            <div className="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center flex-shrink-0">
+                                <User size={20} className="text-zinc-400"/>
+                            </div>
+                            <div>
+                                <p className="text-zinc-500 text-[10px] uppercase tracking-wider font-semibold">Customer</p>
+                                <p className="text-white text-sm font-bold"> {booking?.user?.name ?? "user"}</p>
+                            </div>
+                        </div>
+                    )}
+                    <button
+                    onClick={()=> router.push("/")}
+                    className="w-full border border-zinc-700 text-zinc-400 py-3.5 rounded-2xl text-sm font-semibold hover:bg-zinc-900 transition-colors">Back To Home</button>
 
                 </motion.div>
             </div>
