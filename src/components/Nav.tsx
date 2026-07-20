@@ -17,7 +17,7 @@ import { getSocket } from '@/lib/socket'
 
 function Nav(){
     const {userData} = useSelector((state:RootState) => state.user)
-    const Nav_Items = ["Home", "Booking","About us", "Contact us"]
+    const Nav_Items = [ "Booking"]
     const [profileOpen, setProfileOpen] = useState(false)
     const pathName = usePathname()
     const [authOpen,setAuthOpen] = useState(false)
@@ -77,16 +77,7 @@ function Nav(){
                         <Link className='relative text-sm font-medium text-gray-300 hover:text-white transition' href={"/partner/active-ride"}>Active Ride</Link>
                         </>
                     ):
-                    Nav_Items.map((items,idx)=> {
-                    let href;
-                    if(items=="Home"){
-                        href = '/'
-                    }else{
-                        href=`/user/${items.toLowerCase()}`
-                    }    
-                    const active = href == pathName
-                    return <Link key={idx} href={href} className={`text-sm font-medium transition ${active ? "text-white" : "text-gray-400 hover:text-white"}`} >{items}</Link>
-                })
+                    null
                     
                     }
                 
@@ -111,6 +102,21 @@ function Nav(){
                                     <div className="p-5">
                                         <p className='font-semibold text-lg'>{userData.name}</p>
                                         <p className='text-xs uppercase text-gray-500 mb-4'>{userData.role}</p>
+
+                                         {userData.role!="partner" && (
+                                            <div className='w-full flex items-center gap-3 p-3 hover:bg-gray-100 rounded-xl cursor-pointer' onClick={() => router.push("/user/booking")}>
+                                                
+                                                Booking
+                                                <ChevronRight size={16} className='ml-auto'/>
+                                            </div>
+                                        )}
+
+
+
+
+
+
+
                                         {userData.role!="partner" && (
                                             <div className='w-full flex items-center gap-3 py-3 hover:bg-gray-100 rounded-xl cursor-pointer' onClick={() => router.push("/partner/onboarding/vehicle")}>
                                                 <div className="flex -space-x-2">
@@ -153,17 +159,17 @@ function Nav(){
                         )}
                     </div>
 
-                    <button className='md:hidden text-white' onClick={()=> setMenuOpen(p=>!p)}>
+                    {/* <button className='md:hidden text-white' onClick={()=> setMenuOpen(p=>!p)}>
                         {menuOpen?<X size={26}/>:<Menu size={26}/>}
                         
-                    </button>
+                    </button> */}
                     
 
                 </div>
                 
             </div>
         </motion.div>
-        <AnimatePresence>
+        {/* <AnimatePresence>
             {menuOpen && (
                 <>
                 <motion.div
@@ -186,7 +192,7 @@ function Nav(){
                     if(items=="Home"){
                         href = '/'
                     }else{
-                        href=`/${items.toLowerCase()}`
+                        href=`/user/${items.toLowerCase()}`
                     }    
                    
                     return <Link key={idx} href={href} className="px-6 py-4 text-gray-300 hover:bg-white/5" >{items}</Link>
@@ -197,7 +203,7 @@ function Nav(){
                 </motion.div>
                 </>
             )}
-        </AnimatePresence>
+        </AnimatePresence> */}
         <AnimatePresence>
             {profileOpen && userData && (
                 <>
@@ -219,6 +225,13 @@ function Nav(){
                                         <p className='font-semibold text-lg'>{userData.name}</p>
                                         <p className='text-xs uppercase text-gray-500 mb-4'>{userData.role}</p>
                                         {userData.role!="partner" && (
+                                            <div className='w-full flex items-center gap-3 pt-3 pb-3 pl-3 py-0 hover:bg-gray-100 rounded-xl cursor-pointer' onClick={() => router.push("/user/booking")}>
+                                                
+                                                Booking
+                                                <ChevronRight size={16} className='ml-auto'/>
+                                            </div>
+                                        )}
+                                        {userData.role!="partner" && (
                                             <div className='w-full flex items-center gap-3 py-3 hover:bg-gray-100 rounded-xl cursor-pointer' onClick={() => router.push("/partner/onboarding/vehicle")}>
                                                 <div className="flex -space-x-2">
                                                     <div className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center"><Bike size={16}/></div>
@@ -227,6 +240,18 @@ function Nav(){
                                                 </div>
                                                 Become a partner
                                                 <ChevronRight size={16} className='ml-auto'/>
+                                            </div>
+                                        )}
+
+                                        {userData.role=="partner" && (
+                                            <div className='flex flex-col gap-4'>
+                                                
+                                            
+                        <Link className='relative text-sm font-medium text-black hover:text-gray-500 transition flex items-center gap-2' href={"/partner/pending-request"}><span>Pending Request </span> 
+                         <span className=' w-6 h-6 bg-black text-white text-xs rounded-full flex items-center justify-center font-bold'>{pendingCount ?? 0}</span>
+                        </Link>
+                        <Link className='relative text-sm font-medium text-black hover:text-gray-500 transition' href={"/partner/booking"}>Booking</Link>
+                        <Link className='relative text-sm font-medium text-black hover:text-gray-500 transition' href={"/partner/active-ride"}>Active Ride</Link>
                                             </div>
                                         )}
                                         <button className='w-full flex items-center gap-3 py-3 hover:bg-gray-100 rounded-xl mt-2 cursor-pointer' onClick={handleLogout}>

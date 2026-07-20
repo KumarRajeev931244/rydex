@@ -185,6 +185,12 @@ function page() {
         setLoading(true);
         const { data } = await axios.get("/api/partner/my-active");
         // console.log("active-ride data:", data);
+
+        if(!data){
+          setLoading(false)
+          setBooking(null)
+          return
+        }
         setStatus(data.bookingStatus);
         setBooking(data);
         
@@ -300,6 +306,11 @@ function page() {
         </div>
       </div>
     );
+  }
+
+  if(!booking){
+    return <div className="bg-black w-full h-screen flex justify-center items-center text-[20px] text-white
+    ">No Active Ride found </div>
   }
   if(status==="completed" && booking){
   return (

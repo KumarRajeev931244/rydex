@@ -11,6 +11,7 @@ import ActionCard from "./ActionCard";
 import axios from "axios";
 import PricingModal from "./PricingModal";
 import { IVehicle } from "@/models/vehicle.model";
+import PartnerEarning from "./PartnerEarning";
 
 
 type Step = {
@@ -223,6 +224,7 @@ export default function PartnerDashboard() {
 
           </motion.div>
         )}
+        <PartnerEarning/>
       </div>
 
       <PricingModal

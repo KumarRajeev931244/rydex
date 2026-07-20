@@ -9,12 +9,12 @@ type Earning={
     date:string,
     earnings:number
 }
-function AdminEarning() {
+function PartnerEarning() {
     const [earningData, setEarningData] = useState<Earning[]>([]);
     useEffect(() => {
         const fetchEarning = async()=>{
             try {
-                const {data} = await axios.get("/api/admin/earning")
+                const {data} = await axios.get("/api/partner/earning")
                 console.log("admin earning:",data);
                 const last7DaysData:Earning[]=data.slice(-7)
                 setEarningData(last7DaysData)
@@ -69,7 +69,7 @@ function AdminEarning() {
        <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 w-full">
         <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
             <div>
-                <span className="inline-block text-[11px] font-semibold tracking-widest uppercase text-blue-600 bg-blue-50 px-3 py-1 rounded-full mb-2">Admin Dashboard</span>
+                <span className="inline-block text-[11px] font-semibold tracking-widest uppercase text-blue-600 bg-blue-50 px-3 py-1 rounded-full mb-2">Parnter Dashboard</span>
                 <h2 className="text-xl font-bold text-gray-900 tracking-tight">
                     Daily Earnings
                 </h2>
@@ -166,4 +166,4 @@ function AdminEarning() {
      );
 }
 
-export default AdminEarning;
+export default PartnerEarning;

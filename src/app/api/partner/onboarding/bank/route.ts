@@ -61,7 +61,9 @@ export async function GET(req:NextRequest){
                     {partnerBank,mobileNumber:user.mobileNumber}, 
                     { status: 200 });
             }else{
-                return null
+                return Response.json(
+                    {message:"bank details not found"}, 
+                    { status: 200 });
             }
 
     } catch (error) {
